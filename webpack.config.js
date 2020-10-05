@@ -20,10 +20,32 @@ module.exports = {
         test: /\.s[ac]ss/i,
         use: ['style-loader', 'css-loader', 'sass-loader'],
       },
+      {
+        test: /\.clist$/,
+        use: [
+          {
+            loader: 'emcc-loader',
+            options: {
+              buildDir: `${__dirname}/temp`,
+              commonFlags: ['-g', '-Wall', '-Wextra'],
+              cFlags: ['-std=c11'],
+              cxxFlags: ['-std=c++14'],
+              ldFlags: [
+                '-s',
+                'DEMANGLE_SUPPORT=1',
+                '-s',
+                'NO_EXIT_RUNTIME=1',
+                '-s',
+                `EXTRA_EXPORTED_RUNTIME_METHODS=['ccall', 'cwrap', 'allocate', 'intArrayFromString']`,
+              ],
+            },
+          },
+        ],
+      },
     ],
   },
   resolve: {
-    extensions: ['.ts', '.js'],
+    extensions: ['.ts', '.js', '.json'],
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -35,5 +57,8 @@ module.exports = {
     port: 3000,
     inline: true,
     hot: true,
+  },
+  externals: {
+    fs: 'empty',
   },
 }
