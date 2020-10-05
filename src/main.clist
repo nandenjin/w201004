@@ -1,0 +1,8 @@
+./main.cpp
+./wasmface/wasmface.cpp
+./wasmface/cascade-classifier.cpp
+./wasmface/haar-like.cpp
+./wasmface/integral-image.cpp
+./wasmface/strong-classifier.cpp
+./wasmface/utility.cpp
+./wasmface/weak-classifier.cpp
