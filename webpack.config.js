@@ -27,16 +27,19 @@ module.exports = {
             loader: 'emcc-loader',
             options: {
               buildDir: `${__dirname}/temp`,
-              commonFlags: ['-g', '-Wall', '-Wextra'],
+              commonFlags: ['-O3'],
               cFlags: ['-std=c11'],
-              cxxFlags: ['-std=c++14'],
+              cxxFlags: ['-std=c++1z'],
               ldFlags: [
                 '-s',
-                'DEMANGLE_SUPPORT=1',
-                '-s',
-                'NO_EXIT_RUNTIME=1',
+                'TOTAL_MEMORY=1024MB',
+
                 '-s',
                 `EXTRA_EXPORTED_RUNTIME_METHODS=['ccall', 'cwrap', 'allocate', 'intArrayFromString']`,
+
+                // https://github.com/emscripten-core/emscripten/issues/6882
+                '-s',
+                `EXPORTED_FUNCTIONS=['_malloc', '_free']`,
               ],
             },
           },

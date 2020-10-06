@@ -2,7 +2,7 @@ import './style/index.scss'
 import worker from './main.clist'
 const model = require('./wasmface/models/human-face')
 
-const HEIGHT = 240
+const HEIGHT = 360
 
 window.addEventListener('load', async () => {
   const video = document.createElement('video')
@@ -22,15 +22,16 @@ window.addEventListener('load', async () => {
 
   // Initialize WasmFace
   const mod = await worker.initialize()
+  console.log(mod)
   const strPtr = mod.allocate(mod.intArrayFromString(JSON.stringify(model)), 0)
   const modelPtr = mod.ccall<number>('create', 'number', ['number'], [strPtr])
-  mod.asm.free(strPtr)
+  mod._free(strPtr)
 
   const tick = () => {
     requestAnimationFrame(tick)
     const pp = 1,
       othresh = 0.3,
-      nthresh = 10,
+      nthresh = 5,
       step = 2.0,
       delta = 2.0
 
@@ -71,8 +72,8 @@ window.addEventListener('load', async () => {
 
     console.log(len, boxes)
 
-    mod.asm.free(inputBuf)
-    mod.asm.free(resultPtr)
+    mod._free(inputBuf)
+    mod._free(resultPtr)
 
     for (const box of boxes) {
       ctx.strokeStyle = 'red'

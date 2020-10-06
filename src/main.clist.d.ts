@@ -1,11 +1,11 @@
 export interface Assembly {
-  free(ptr: number)
   tick(): number
 }
 
 // 以下テンプレ
 
 export interface Module {
+  _free(strPtr: number): void
   HEAPU8: Uint8Array
   HEAPU16: Uint16Array
   _malloc(length: number): number
