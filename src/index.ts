@@ -1,4 +1,5 @@
 import './style/index.scss'
+import Stats from 'stats.js'
 import worker from './main.clist'
 const model = require('./wasmface/models/human-face')
 
@@ -20,6 +21,9 @@ window.addEventListener('load', async () => {
   canvas.setAttribute('height', HEIGHT.toString())
   document.body.appendChild(canvas)
 
+  const stats = new Stats()
+  document.body.appendChild(stats.dom)
+
   // Initialize WasmFace
   const mod = await worker.initialize()
   console.log(mod)
@@ -28,6 +32,7 @@ window.addEventListener('load', async () => {
   mod._free(strPtr)
 
   const tick = () => {
+    stats.begin()
     requestAnimationFrame(tick)
     const pp = 1,
       othresh = 0.3,
@@ -70,8 +75,6 @@ window.addEventListener('load', async () => {
       ])
     }
 
-    console.log(len, boxes)
-
     mod._free(inputBuf)
     mod._free(resultPtr)
 
@@ -82,6 +85,8 @@ window.addEventListener('load', async () => {
       ctx.rect(box[0], box[1], box[2], box[2])
       ctx.stroke()
     }
+
+    stats.end()
   }
 
   requestAnimationFrame(tick)
