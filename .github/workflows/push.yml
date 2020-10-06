@@ -49,6 +49,8 @@ jobs:
       run: yarn --frozen-lockfile
     - name: Setup emsdk
       uses: mymindstorm/setup-emsdk@v7
+    - name: Version check
+      run: emcc -v
     - name: Build
       run: yarn build
     - name: Upload a Build Artifact
