@@ -47,6 +47,8 @@ jobs:
           ${{ runner.os }}-yarn-
     - name: Install dependencies
       run: yarn --frozen-lockfile
+    - name: Setup emsdk
+      uses: mymindstorm/setup-emsdk@v7
     - name: Build
       run: yarn build
     - name: Upload a Build Artifact
@@ -69,4 +71,3 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./
-    
