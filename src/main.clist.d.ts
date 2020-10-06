@@ -25,7 +25,7 @@ export interface Module {
 }
 
 export interface ModuleLoader {
-  initialize(userModule?: any): Promise<Module>
+  initialize(userModule?: Record): Promise<Module>
 }
 
 declare const loader: ModuleLoader
