@@ -37,6 +37,15 @@ window.addEventListener('load', async () => {
   /** The last update time of faceBox */
   let faceBoxLastUpdated = 0
 
+  /** Size of raw level memory */
+  const RAW_MEM_SIZE = 200
+
+  /** Address for raw level memory */
+  const rawMemPtr = mod._malloc(RAW_MEM_SIZE * Float32Array.BYTES_PER_ELEMENT)
+
+  /** Index cursor for raw level memory */
+  let rawMemPtrIndex = 0
+
   const tick = () => {
     requestAnimationFrame(tick)
 
@@ -105,6 +114,38 @@ window.addEventListener('load', async () => {
       // Update time
       faceBoxLastUpdated = now
     }
+
+    const avg = mod.ccall<number>(
+      'tick',
+      'number',
+      [
+        'number',
+        'number',
+        'number',
+        'number',
+        'number',
+        'number',
+        'number',
+        'number',
+        'number',
+        'number',
+        'number',
+        'number',
+      ],
+      [
+        inputBuf,
+        WIDTH,
+        HEIGHT,
+        ...faceBox,
+        rawMemPtr,
+        RAW_MEM_SIZE,
+        rawMemPtrIndex,
+      ]
+    )
+    console.log(avg)
+
+    rawMemPtrIndex++
+    if (rawMemPtrIndex >= RAW_MEM_SIZE) rawMemPtrIndex = 0
 
     // Free source video frame
     mod._free(inputBuf)
