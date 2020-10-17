@@ -10,8 +10,8 @@
 
 ## Build dependencies
 
-* [`emsdk`](https://github.com/emscripten-core/emsdk): A SDK package of [Emscripten](https://emscripten.org/)
+- [`emsdk`](https://github.com/emscripten-core/emsdk): A SDK package of [Emscripten](https://emscripten.org/)
 
 ## Special Thanks
 
-* [`wasmface`](https://github.com/noahlevenson/wasmface/) by [@noahlevenson](https://github.com/noahlevenson/)
+- [`wasmface`](https://github.com/noahlevenson/wasmface/) by [@noahlevenson](https://github.com/noahlevenson/)
