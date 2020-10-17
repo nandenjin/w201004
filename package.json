@@ -17,6 +17,7 @@
     "dev": "webpack serve --mode development"
   },
   "dependencies": {
+    "path-browserify": "^1.0.1",
     "stats.js": "^0.17.0"
   },
   "devDependencies": {
