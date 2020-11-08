@@ -27,7 +27,7 @@
     "cross-env": "^7.0.2",
     "css-loader": "^5.0.0",
     "emcc-loader": "^0.0.5",
-    "eslint": "^7.12.1",
+    "eslint": "^7.13.0",
     "eslint-config-prettier": "^6.15.0",
     "eslint-plugin-prettier": "^3.1.4",
     "html-webpack-plugin": "^4.5.0",
