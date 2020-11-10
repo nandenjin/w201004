@@ -24,7 +24,7 @@ module.exports = {
         test: /\.clist$/,
         use: [
           {
-            loader: 'emcc-loader',
+            loader: '@nandenjin/emcc-loader',
             options: {
               buildDir: `${__dirname}/temp`,
               commonFlags: ['-O3'],
