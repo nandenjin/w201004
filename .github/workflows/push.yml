@@ -22,7 +22,7 @@ jobs:
       #     restore-keys: |
       #       ${{ runner.os }}-yarn-
       - name: Export token for GitHub Packages Registry
-        run: echo "//npm.pkg.github.com/:_authToken=$TOKEN" >> ~/.npmrc
+        run: echo "//npm.pkg.github.com/:_authToken=$AUTH_TOKEN" >> ~/.npmrc
         env:
           AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Install dependencies
