@@ -39,11 +39,11 @@ module.exports = {
                 'TOTAL_MEMORY=1024MB',
 
                 '-s',
-                `EXTRA_EXPORTED_RUNTIME_METHODS=['ccall', 'cwrap', 'allocate', 'intArrayFromString']`,
+                `EXTRA_EXPORTED_RUNTIME_METHODS=['ccall','cwrap','allocate','intArrayFromString']`,
 
                 // https://github.com/emscripten-core/emscripten/issues/6882
                 '-s',
-                `EXPORTED_FUNCTIONS=['_malloc', '_free']`,
+                `EXPORTED_FUNCTIONS=['_malloc','_free']`,
               ],
             },
           },
