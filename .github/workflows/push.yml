@@ -21,10 +21,12 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
+      - name: Export token for GitHub Packages Registry
+        run: echo "//npm.pkg.github.com/:_authToken=$TOKEN" >> ~/.npmrc
+        env:
+          AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Install dependencies
         run: yarn --frozen-lockfile
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Lint
         run: yarn lint
 
@@ -46,10 +48,12 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
+      - name: Export token for GitHub Packages Registry
+        run: echo "//npm.pkg.github.com/:_authToken=$AUTH_TOKEN" >> ~/.npmrc
+        env:
+          AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Install dependencies
         run: yarn --frozen-lockfile
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Build
         run: yarn build
       - name: Upload a Build Artifact
