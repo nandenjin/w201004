@@ -26,6 +26,10 @@ module.exports = {
           {
             loader: '@nandenjin/emcc-loader',
             options: {
+              cwd: __dirname,
+              cc: 'docker run -v $(pwd):/src emscripten/emsdk emcc',
+              cxx: 'docker run -v $(pwd):/src emscripten/emsdk em++',
+              ld: 'docker run -v $(pwd):/src emscripten/emsdk emcc',
               buildDir: `${__dirname}/temp`,
               commonFlags: ['-O3'],
               cFlags: ['-std=c11'],
