@@ -193,10 +193,10 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@nandenjin/emcc-loader@^0.1.0":
-  version "0.1.0"
-  resolved "https://npm.pkg.github.com/download/@nandenjin/emcc-loader/0.1.0/86db132bb1f8cc95e3551b7ebbf7edac6b547cf094227a0393f47cba7cd685ee#333132d65c28bbefa04916d88e879589b258e0a8"
-  integrity sha512-mtSrKka6+/whvydnPLqBRStm/8bxAL+fFIREXDelWec7+VwcTSUSCVU89gHOP20K/vVbDPHU2X5w7eM4uZ/hTg==
+"@nandenjin/emcc-loader@^0.1.1":
+  version "0.1.1"
+  resolved "https://npm.pkg.github.com/download/@nandenjin/emcc-loader/0.1.1/2c20dead295b340ea44ec0194d25e8b3540427477a684e388da0a19f09002031#b71262a4134a8709f67ea9e442530fc0577c8e49"
+  integrity sha512-AtGdTtPMDPwCDOmWvgfsRzrKimVFPYcuhKm/gVOcHjGzNNRR+w9/xwt/+hmVCpuTpQg70eLdrxOEtCW2eqMe/Q==
   dependencies:
     loader-utils "^2.0.0"
     mkdirp "^1.0.4"

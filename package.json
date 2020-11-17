@@ -22,7 +22,7 @@
     "stats.js": "^0.17.0"
   },
   "devDependencies": {
-    "@nandenjin/emcc-loader": "^0.1.0",
+    "@nandenjin/emcc-loader": "^0.1.1",
     "@types/stats.js": "^0.17.0",
     "@typescript-eslint/eslint-plugin": "^4.7.0",
     "@typescript-eslint/parser": "^4.7.0",
