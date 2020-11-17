@@ -8,6 +8,7 @@ export interface Module {
   _free(strPtr: number): void
   HEAPU8: Uint8Array
   HEAPU16: Uint16Array
+  HEAPF32: Float32Array
   _malloc(length: number): number
   ccall<T>(
     ident: string,

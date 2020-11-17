@@ -11,7 +11,19 @@
 extern "C" {
 #endif
 
-float EMSCRIPTEN_KEEPALIVE tick(unsigned char inputBuf[], uint16_t w, uint16_t h, uint16_t box_x, uint16_t box_y, uint16_t box_s, float rawMem[], uint16_t rawMemSize, uint16_t rawMemIndex, float normalizedMem[], uint16_t normalizedMemSize, uint16_t normalizedMemIndex) {
+float EMSCRIPTEN_KEEPALIVE tick(
+  unsigned char inputBuf[],
+  uint16_t w,
+  uint16_t h,
+  uint16_t box_x,
+  uint16_t box_y,
+  uint16_t box_s,
+  float rawMem[],
+  uint16_t rawMemSize,
+  uint16_t rawMemIndex,
+  float real[],
+  float imag[]
+) {
   long sum = 0;
   for (int y = box_y; y < box_y + box_s; y++) {
     for (int x = box_x; x < box_x + box_s; x++) {
@@ -35,6 +47,33 @@ float EMSCRIPTEN_KEEPALIVE tick(unsigned char inputBuf[], uint16_t w, uint16_t h
   }
 
   float rawDev = devSum / rawMemSize;
+
+  float *mem = new float[rawMemSize];
+  int memIndex = 0;
+
+  for (int i = rawMemIndex + 1; i < rawMemSize; i++) {
+    mem[memIndex++] = (rawMem[i] - rawAvg) / rawDev;
+  }
+
+  for (int i = 0; i <= rawMemIndex; i++) {
+    mem[memIndex++] = (rawMem[i] - rawAvg) / rawDev;
+  }
+
+  float w0 = 2 * 3.1415 / rawMemSize;
+  for (int i = 0; i < rawMemSize; i++) {
+    real[i] = 1.0;
+    imag[i] = 1.0;
+
+    for (int j = 0; j < rawMemSize; j++) {
+      real[i] += mem[j] * cos(w0 * i * j);
+      imag[i] -= mem[j] * sin(w0 * i * j);
+    }
+
+    real[i] /= rawMemSize;
+    imag[i] /= rawMemSize;
+  }
+
+  delete[] mem;
 
   return (raw - rawAvg) / rawDev;
 }

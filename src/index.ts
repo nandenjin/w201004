@@ -46,6 +46,16 @@ window.addEventListener('load', async () => {
   /** Index cursor for raw level memory */
   let rawMemPtrIndex = 0
 
+  /** Address for result memory (real) */
+  const resultRealPtr = mod._malloc(
+    RAW_MEM_SIZE * Float32Array.BYTES_PER_ELEMENT
+  )
+
+  /** Address for result memory (imag) */
+  const resultImagPtr = mod._malloc(
+    RAW_MEM_SIZE * Float32Array.BYTES_PER_ELEMENT
+  )
+
   const tick = () => {
     requestAnimationFrame(tick)
 
@@ -115,20 +125,32 @@ window.addEventListener('load', async () => {
       faceBoxLastUpdated = now
     }
 
-    const avg = mod.ccall<number>(
+    mod.ccall<number>(
       'tick',
       'number',
       [
+        // inputBuf
+        'number',
+
+        // width, height
+        'number',
+        'number',
+
+        // faceBox[]
         'number',
         'number',
         'number',
+
+        // rawMemPtr
         'number',
+
+        // RAW_MEM_SIZE
         'number',
+
+        // rawMemPtrIndex
         'number',
-        'number',
-        'number',
-        'number',
-        'number',
+
+        // resultPtr (real, imag)
         'number',
         'number',
       ],
@@ -140,9 +162,23 @@ window.addEventListener('load', async () => {
         rawMemPtr,
         RAW_MEM_SIZE,
         rawMemPtrIndex,
+        resultRealPtr,
+        resultImagPtr,
       ]
     )
-    console.log(avg)
+
+    console.log(
+      mod.HEAPF32.subarray(
+        resultRealPtr / Float32Array.BYTES_PER_ELEMENT,
+        resultRealPtr / Float32Array.BYTES_PER_ELEMENT + RAW_MEM_SIZE
+      ).join('\n')
+    )
+    console.log(
+      mod.HEAPF32.subarray(
+        resultImagPtr / Float32Array.BYTES_PER_ELEMENT,
+        resultImagPtr / Float32Array.BYTES_PER_ELEMENT + RAW_MEM_SIZE
+      ).join('\n')
+    )
 
     rawMemPtrIndex++
     if (rawMemPtrIndex >= RAW_MEM_SIZE) rawMemPtrIndex = 0
