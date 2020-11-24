@@ -10,7 +10,7 @@
 
 ## Build dependencies
 
-- [Docker](https://www.docker.com/) to compiling C++ codes
+- [Docker](https://www.docker.com/) to compile C++ codes
 
 ## Special Thanks
 
