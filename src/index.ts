@@ -38,23 +38,34 @@ window.addEventListener('load', async () => {
   let faceBoxLastUpdated = 0
 
   /** Size of raw level memory */
-  const RAW_MEM_SIZE = 200
+  const MEM_SIZE = 200
 
   /** Address for raw level memory */
-  const rawMemPtr = mod._malloc(RAW_MEM_SIZE * Float32Array.BYTES_PER_ELEMENT)
+  const rawMemPtr = mod._malloc(MEM_SIZE * Float32Array.BYTES_PER_ELEMENT)
+  mod.HEAPF32.fill(
+    0,
+    rawMemPtr / Float32Array.BYTES_PER_ELEMENT,
+    rawMemPtr / Float32Array.BYTES_PER_ELEMENT + MEM_SIZE
+  )
 
   /** Index cursor for raw level memory */
-  let rawMemPtrIndex = 0
+  let cursorIndex = 0
 
-  /** Address for result memory (real) */
-  const resultRealPtr = mod._malloc(
-    RAW_MEM_SIZE * Float32Array.BYTES_PER_ELEMENT
-  )
+  /** Address for result memory */
+  const resultAmpPtr = mod._malloc(MEM_SIZE * Float32Array.BYTES_PER_ELEMENT)
+
+  /** Time of last rendered frame */
+  let lastRenderedTime = 0
+
+  /** Delta times between rendered frames */
+  const frameDeltas = new Float32Array(MEM_SIZE)
 
   /** Address for result memory (imag) */
   const resultImagPtr = mod._malloc(
     RAW_MEM_SIZE * Float32Array.BYTES_PER_ELEMENT
-  )
+  document.body.appendChild(videoCanvas)
+  const stats = new Stats()
+  document.body.appendChild(stats.dom)
 
   const tick = () => {
     requestAnimationFrame(tick)
@@ -144,14 +155,13 @@ window.addEventListener('load', async () => {
         // rawMemPtr
         'number',
 
-        // RAW_MEM_SIZE
+        // MEM_SIZE
         'number',
 
-        // rawMemPtrIndex
+        // cursorIndex
         'number',
 
-        // resultPtr (real, imag)
-        'number',
+        // resultPtr
         'number',
       ],
       [
@@ -160,25 +170,20 @@ window.addEventListener('load', async () => {
         HEIGHT,
         ...faceBox,
         rawMemPtr,
-        RAW_MEM_SIZE,
-        rawMemPtrIndex,
-        resultRealPtr,
-        resultImagPtr,
+        MEM_SIZE,
+        cursorIndex,
+        resultAmpPtr,
       ]
     )
 
-    console.log(
-      mod.HEAPF32.subarray(
-        resultRealPtr / Float32Array.BYTES_PER_ELEMENT,
-        resultRealPtr / Float32Array.BYTES_PER_ELEMENT + RAW_MEM_SIZE
-      ).join('\n')
+    // Free source video frame
+    mod._free(inputBuf)
+
+    const amp = mod.HEAPF32.subarray(
+      resultAmpPtr / Float32Array.BYTES_PER_ELEMENT,
+      resultAmpPtr / Float32Array.BYTES_PER_ELEMENT + MEM_SIZE
     )
-    console.log(
-      mod.HEAPF32.subarray(
-        resultImagPtr / Float32Array.BYTES_PER_ELEMENT,
-        resultImagPtr / Float32Array.BYTES_PER_ELEMENT + RAW_MEM_SIZE
-      ).join('\n')
-    )
+    const ampMax = Math.max(...amp)
 
     rawMemPtrIndex++
     if (rawMemPtrIndex >= RAW_MEM_SIZE) rawMemPtrIndex = 0
@@ -192,6 +197,13 @@ window.addEventListener('load', async () => {
     ctx.beginPath()
     ctx.rect(faceBox[0], faceBox[1], faceBox[2], faceBox[2])
     ctx.stroke()
+    // Log delta time
+    frameDeltas[cursorIndex] = now - lastRenderedTime
+    lastRenderedTime = now
+
+    // Increment cursor
+    cursorIndex++
+    if (cursorIndex >= MEM_SIZE) cursorIndex = 0
 
     // End of fps stats
     stats.end()

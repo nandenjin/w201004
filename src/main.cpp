@@ -21,8 +21,7 @@ float EMSCRIPTEN_KEEPALIVE tick(
   float rawMem[],
   uint16_t rawMemSize,
   uint16_t rawMemIndex,
-  float real[],
-  float imag[]
+  float amp[]
 ) {
   long sum = 0;
   for (int y = box_y; y < box_y + box_s; y++) {
@@ -61,16 +60,17 @@ float EMSCRIPTEN_KEEPALIVE tick(
 
   float w0 = 2 * 3.1415 / rawMemSize;
   for (int i = 0; i < rawMemSize; i++) {
-    real[i] = 1.0;
-    imag[i] = 1.0;
+    float real = 1.0;
+    float imag = 1.0;
 
     for (int j = 0; j < rawMemSize; j++) {
-      real[i] += mem[j] * cos(w0 * i * j);
-      imag[i] -= mem[j] * sin(w0 * i * j);
+      real += mem[j] * cos(w0 * i * j);
+      imag -= mem[j] * sin(w0 * i * j);
     }
 
-    real[i] /= rawMemSize;
-    imag[i] /= rawMemSize;
+    real /= rawMemSize;
+    imag /= rawMemSize;
+    amp[i] = sqrt(pow(real, 2) + pow(imag, 2));
   }
 
   delete[] mem;
