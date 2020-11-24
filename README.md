@@ -10,7 +10,7 @@
 
 ## Build dependencies
 
-- [`emsdk`](https://github.com/emscripten-core/emsdk): A SDK package of [Emscripten](https://emscripten.org/)
+- [Docker](https://www.docker.com/) to compiling C++ codes
 
 ## Special Thanks
 
