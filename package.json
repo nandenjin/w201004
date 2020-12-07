@@ -24,7 +24,7 @@
   "devDependencies": {
     "@nandenjin/emcc-loader": "^0.1.1",
     "@types/stats.js": "^0.17.0",
-    "@typescript-eslint/eslint-plugin": "^4.8.1",
+    "@typescript-eslint/eslint-plugin": "^4.9.0",
     "@typescript-eslint/parser": "^4.9.0",
     "cross-env": "^7.0.3",
     "css-loader": "^5.0.1",
