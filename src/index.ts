@@ -16,14 +16,6 @@ window.addEventListener('load', async () => {
 
   const WIDTH = Math.floor(HEIGHT * (4 / 3)) // ToDo: fetch from source size
 
-  const canvas = document.createElement('canvas')
-  canvas.setAttribute('width', WIDTH.toString())
-  canvas.setAttribute('height', HEIGHT.toString())
-  document.body.appendChild(canvas)
-
-  const stats = new Stats()
-  document.body.appendChild(stats.dom)
-
   // Initialize WasmFace
   const mod = await worker.initialize()
   console.log(mod)
@@ -60,10 +52,16 @@ window.addEventListener('load', async () => {
   /** Delta times between rendered frames */
   const frameDeltas = new Float32Array(MEM_SIZE)
 
-  /** Address for result memory (imag) */
-  const resultImagPtr = mod._malloc(
-    RAW_MEM_SIZE * Float32Array.BYTES_PER_ELEMENT
+  const videoCanvas = document.createElement('canvas')
+  videoCanvas.setAttribute('width', WIDTH.toString())
+  videoCanvas.setAttribute('height', HEIGHT.toString())
   document.body.appendChild(videoCanvas)
+
+  const graphCanvas = document.createElement('canvas')
+  graphCanvas.setAttribute('width', MEM_SIZE.toString())
+  graphCanvas.setAttribute('height', '100')
+  document.body.appendChild(graphCanvas)
+
   const stats = new Stats()
   document.body.appendChild(stats.dom)
 
@@ -76,14 +74,18 @@ window.addEventListener('load', async () => {
     /** Current unix time */
     const now = Date.now()
 
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
+    const videoCtx = videoCanvas.getContext('2d')
+    if (!videoCtx) return
 
     // Draw video source on canvas
-    ctx.drawImage(video, 0, 0, WIDTH, HEIGHT)
+    // videoCtx.drawImage(video, 0, 0, WIDTH, HEIGHT)
+    videoCtx.fillStyle =
+      'rgb(0,' + (Math.sin((now / 200) * 2 * Math.PI + 1) / 2) * 255 + ',0)'
+    videoCtx.clearRect(0, 0, WIDTH, HEIGHT)
+    videoCtx.fillRect(0, 0, WIDTH, HEIGHT)
 
     /** Data of latest video frame */
-    const imageData = ctx.getImageData(0, 0, WIDTH, HEIGHT)
+    const imageData = videoCtx.getImageData(0, 0, WIDTH, HEIGHT)
 
     /** Address of video frame */
     const inputBuf = mod._malloc(imageData.data.length)
@@ -168,7 +170,8 @@ window.addEventListener('load', async () => {
         inputBuf,
         WIDTH,
         HEIGHT,
-        ...faceBox,
+        //...faceBox,
+        ...[0, 0, 10],
         rawMemPtr,
         MEM_SIZE,
         cursorIndex,
@@ -185,18 +188,28 @@ window.addEventListener('load', async () => {
     )
     const ampMax = Math.max(...amp)
 
-    rawMemPtrIndex++
-    if (rawMemPtrIndex >= RAW_MEM_SIZE) rawMemPtrIndex = 0
+    const graphCtx = graphCanvas.getContext('2d')
+    if (!graphCtx) return
 
-    // Free source video frame
-    mod._free(inputBuf)
+    graphCtx.clearRect(0, 0, MEM_SIZE, 100)
+    graphCtx.fillStyle = 'green'
+    console.log(amp)
+    for (let i = 0; i < MEM_SIZE; i++) {
+      graphCtx.fillRect(
+        i,
+        (1 - amp[i] / ampMax) * 100,
+        1,
+        (amp[i] / ampMax) * 100
+      )
+    }
 
     // Draw bounding box on canvas
-    ctx.strokeStyle = 'red'
-    ctx.lineWidth = 3
-    ctx.beginPath()
-    ctx.rect(faceBox[0], faceBox[1], faceBox[2], faceBox[2])
-    ctx.stroke()
+    // videoCtx.strokeStyle = 'red'
+    // videoCtx.lineWidth = 3
+    // videoCtx.beginPath()
+    // videoCtx.rect(faceBox[0], faceBox[1], faceBox[2], faceBox[2])
+    // videoCtx.stroke()
+
     // Log delta time
     frameDeltas[cursorIndex] = now - lastRenderedTime
     lastRenderedTime = now
